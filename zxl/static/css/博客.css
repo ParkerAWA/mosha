@@ -1,0 +1,26 @@
+/*.col-sm-9{*/
+/*    border: 1px solid #aaaaaa;*/
+
+/*}*/
+
+/*.col-sm-3{*/
+/*        border: 1px solid #aaaaaa;*/
+
+
+/*}*/
+.pagination{
+    /*margin:auto;*/
+    display: flex;
+    justify-content: center;
+    /*text-align: center;*/
+
+}
+
+
+.more .more-item{
+    display: inline-block;
+    margin-right: 20px;
+
+
+}
+

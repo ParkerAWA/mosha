@@ -1,0 +1,47 @@
+{% extends 'OUT.html' %}
+{% block content %}
+
+    <div class="container">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="text" name="name">
+            <input type="file" name="file">
+            <input type="submit" value="上传">
+
+        </form>
+    </div>
+
+
+
+
+
+
+{% endblock %}
+
+
+
+{% block js %}
+    <script>
+    document.getElementById('upload-form').addEventListener('submit', function(event) {
+  event.preventDefault(); // 阻止表单默认提交行为
+
+  var fileInput = document.getElementById('upload-input');
+  var file = fileInput.files[0]; // 获取选中的文件
+
+  if (file) {
+    // 这里只是一个示例，实际应用中你需要使用FormData上传文件到服务器
+    // 然后服务器返回新头像的URL，你再更新img的src属性
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+      document.getElementById('user-avatar').src = e.target.result; // 使用FileReader读取的DataURL设置为头像源
+    };
+
+    reader.readAsDataURL(file); // 读取文件为DataURL
+  } else {
+    alert('请选择一个图片文件！');
+  }
+});
+
+    </script>
+{% endblock %}

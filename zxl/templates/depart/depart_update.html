@@ -1,0 +1,30 @@
+{% extends 'OUT.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="panel panel-default">
+
+        <div class="panel-heading" style="margin-bottom: 10px">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            部门编辑
+        </div>
+
+        <form  method="post">
+             {% csrf_token %}
+            <div class="form-group"  style="margin-bottom: 10px">
+                <input type="text" class="form-control" name="title" placeholder="修改部门" value="{{ row.title }}">
+                <span style="color: red">{{ error_msg }}</span>
+            </div>
+            <button type="submit" class="btn btn-primary">提交</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+

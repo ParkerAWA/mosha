@@ -1,0 +1,28 @@
+settings.py----项目配置---常用操作文件 *
+urls.py----URL和函数的关系---常用操作文件
+
+
+manage.py---项目的管理、启动项目、创建APP、数据管理--不用动 *
+            python manage.py startapp app01---创建app文件
+
+asgi.py---接收网络请求，不要动
+wsgi.py---接收网络请求，不要动
+
+
+
+
+app01
+apps.py----固定不要动,app启动的类
+migrations-----不要动，记录数据库字段修改记录
+admin.py--------不要动，django默认提供的后台管理
+test.py-----不要动，单元测试
+
+views.py-----url调用函数,常用操作文件
+models.py------操作数据库,常用操作文件
+
+
+
+app注册：
+在settings.py中的INSTALLED_APPS 添加
+'app01.apps.App01Config'
+

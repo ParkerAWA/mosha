@@ -1,0 +1,46 @@
+{% extends 'OUT.html' %}
+{% load static %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="panel-heading" style="margin-bottom: 10px">
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+            用户编辑
+        </div>
+        <form method="post" novalidate >
+            {% csrf_token %}
+            {% for field in form %}
+                    <div class="form-group">
+                        <label>{{ field.label }}</label>
+                        {{ field }}
+                        <span style="color: red">{{ field.errors.0 }}</span>
+                    </div>
+            {% endfor %}
+
+
+
+
+
+
+            <button type="submit" class="btn btn-primary">提交</button>
+
+        </form>
+
+
+    </div>
+
+
+{% endblock %}
+{% block js %}
+    <script src="{% static 'plugins/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js' %}"></script>
+    <script>
+        $(function (){
+            $('#id_create_time').datetimepicker({
+                format: 'yyyy-mm-dd',
+                language:'zh-CN',
+            });
+        })
+    </script>
+{% endblock %}

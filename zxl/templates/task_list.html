@@ -1,0 +1,246 @@
+{% extends 'OUT.html' %}
+{% block content %}
+    <div class="container ">
+        {#新建模态框#}
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">订单填写</h4>
+                    </div>
+                    <div class="modal-body">
+                        {#                    表单#}
+                        <div class="panel-body">
+                            <form id="formadd">
+                                <div class="clearfix">
+
+
+                                    {% for field in form %}
+                                        <div class="col-xs-6">
+
+                                            <div class="form-group" style="position: relative">
+                                                <label>{{ field.label }}</label>
+                                                {{ field }}
+                                                <span style="color: red;position: absolute "
+                                                      class="error-msg"></span>
+                                            </div>
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-primary" id="save">保存</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        {#搜索和按钮#}
+        <div class="container" style="margin-bottom: 10px">
+            {#            <div class="container">#}
+            {#        <input type="button" class="btn btn-success" value="新建订单1" data-toggle="modal" data-target="#myModal">#}
+            <input type="button" class="btn btn-success" value="新建任务" id="btnadd">
+
+            <div style="float: right;width: 300px">
+                <form method="get">
+                    <div class="input-group">
+
+                        <input type="search" class="form-control" placeholder="任务名称" name="title"
+                               value="{{ search_data }}">
+                        <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">
+                    <span class="glyphicon glyphicon-search" aria-hidden="true"> </span>
+                </button>
+                </span>
+
+                    </div>
+                </form>
+            </div>
+
+            {#            </div>#}
+        </div>
+
+        {#任务列表#}
+        <div class=" panel panel-default">
+
+            <table class="table table-hover table-bordered">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>任务名称</th>
+                    <th>内容</th>
+                    <th>创建时间</th>
+                    <th>等级</th>
+                    <th>状态</th>
+                    <th>执行人</th>
+
+
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for i in queryset %}
+                    <tr>
+                        <td>{{ i.id }}</td>
+                        <td>{{ i.title }}</td>
+                        <td>{{ i.content }}</td>
+                        <td>{{ i.create_time }}</td>
+                        <td>{{ i.get_level_display }}</td>
+                        <td>{{ i.get_status_display }}</td>
+                        <td>{{ i.user.username }}</td>
+
+
+                        <td>
+
+                            <input uid="{{ i.id }}" type="button" class="btn btn-danger  btn-delete" value="删除">
+
+
+                        </td>
+
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+
+        </div>
+        <div class=" clearfix" style="display: flex;justify-content: center">
+
+            <ul class="pagination" style="float: left">
+                {{ page_string }}
+                <li>
+                    <form style="float: left;margin-top: -1px;" method="get">
+                        <input type="text" class="form-control"
+                               style="position: relative;float: left;display: inline-block;width: 60px;border-radius: 0;"
+                               name="page" placeholder="页码">
+
+                        <button class="btn btn-default" type="submit">跳转</button>
+
+                    </form>
+                </li>
+            </ul>
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+{% endblock %}
+
+
+{% block js %}
+    <script type="text/javascript">
+        var delete_id;
+
+        $(function () {
+            {#当页面加载完成之后，执行#}
+
+            bindbtnaddevent();
+            bindsaveevent();
+            bindBtnDeleteevent();
+
+
+        })
+
+
+        function bindbtnaddevent() {
+            $("#btnadd").click(function () {
+                $(".error-msg").empty();
+
+                $("#myModal").modal('show');
+
+
+            })
+            {#console.log("点击我");#}
+
+        }
+
+        function bindsaveevent() {
+            $("#save").click(function () {
+                $(".error-msg").empty();
+                //清除错误信息
+                //向后台发送添加的ajax请求
+                $.ajax({
+                    url: '/task/add/',
+                    type: 'post',
+                    data: $("#formadd").serialize(),
+                    dataTypes: 'json',
+                    success: function (res) {
+                        if (res.status) {
+                            {#alert('成功');#}
+
+                            $("#formadd")[0].reset();
+                            {#清空表单#}
+                            $('#myModal').modal('hide');
+                            {#关闭模态框#}
+                            location.reload();
+                            {#用js刷新页面#}
+
+                        } else {
+                            $.each(res.error, function (name, errorlist) {
+                                {#console.log(name, data);#}
+                                $('#id_' + name).next().text(errorlist[0]);
+
+                            })
+                        }
+
+                    }
+                })
+
+
+            })
+        }
+
+        function bindBtnDeleteevent() {
+            $(".btn-delete").click(function () {
+                {#$('#deleteModal').modal('show');#}
+                {#获取删除的id，赋值给全局变量#}
+                delete_id = $(this).attr('uid');
+                $.ajax({
+                    url: '/task/delete/',
+                    {#/order/delete/?uid=xxx#}
+
+                    type: 'GET',
+                    data: {
+                        uid: delete_id
+                    },
+                    dataTypes: 'json',
+                    success: function (res) {
+                        if (res.status) {
+
+                            location.reload();
+                            {#刷新页面#}
+                        } else {
+                            alert(res.error)
+                        }
+                    }
+                })
+
+
+            });
+        }
+
+
+    </script>
+    <script>
+        $(function () {
+            $('#id_create_time').datetimepicker({
+                format: 'yyyy-mm-dd',
+                language: 'zh-CN',
+            });
+        })
+
+    </script>
+{% endblock %}

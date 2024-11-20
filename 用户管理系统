@@ -1,0 +1,36 @@
+用户管理系统
+主要是几个简单的HTML页面，主要功能是：
+
+部门管理和用户管理
+
+在管理功能上，主要是对数据的增删查改
+
+功能的实现主要是 django 框架
+
+数据的增删查改主要是ORM框架
+
+主要的 sql 语句转化models 语句实现
+所需要的表格用Models.py 编写
+
+
+主要流程：
+
+第一步，连接数据库
+
+第二步，在models.py 里面编写数据表
+
+第三步，创建URL
+
+第四步，创建URL对应的HTML界面
+
+第五步，在views.py里面编写对数据的增、删、查、改的函数
+
+ORM操作：
+列如： models.number.objects.filter(id=id).delete()
+
+cookie,随机字符串
+session，用户信息
+
+关系：cookie-----session
+
+使用时，用cookie的随机字符串与session的用户信息对比判断是否存在

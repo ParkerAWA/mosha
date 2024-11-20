@@ -1,0 +1,64 @@
+{% extends 'OUT.html' %}
+{% block content %}
+    <div class="cc">
+
+        <h2 class="bb">用户登录</h2>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="form-group">
+                <label>账号</label>
+                {{ form.username }}
+                <span style="color: red">{{ form.username.errors.0 }}</span>
+            </div>
+
+            <div class="form-group">
+                <label>密码</label>
+                {{ form.password }}
+                <span style="color: red">{{ form.password.errors.0 }}</span>
+            </div>
+
+
+            <div class="form-group">
+                <label for="id_code">验证码</label>
+                <div class="row">
+                    <div class="col-xs-7">
+                        {{ form.code }}
+                        <span style="color: red">{{ form.code.errors.0 }}</span>
+                    </div>
+                    <div class="col-xs-5">
+                        <img src="/image/code/" id="image_code" style=";">
+                        {#                    <a href="javascript:reload_code()">换一张</a>#}
+                        <a href="javascript:" id="refreshCaptcha" >换一张</a>
+                    </div>
+                </div>
+            </div>
+
+
+            <button type="submit" class="btn btn-primary">登录</button>
+        </form>
+
+
+    </div>
+
+
+{% endblock %}
+{% block js %}
+    <script>
+        $(document).ready(function () {
+            // 为刷新验证码的按钮绑定点击事件
+            $("#refreshCaptcha").click(function () {
+                // 发起AJAX请求获取新验证码
+                $.ajax({
+                    url: '/image/code/', // 这里是获取验证码的服务器端脚本地址
+                    type: 'GET',
+                    cache: false, // 禁止浏览器缓存，确保每次请求都是新的验证码
+                    success: function (data) {
+                        // 将返回的数据（即新的验证码图片）设置为img的src，实现验证码的更新
+                        $('#image_code').attr('src', '/image/code/?' + new Date().getTime());
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

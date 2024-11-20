@@ -1,0 +1,263 @@
+{% extends 'OUT.html' %}
+
+{% block content %}
+
+
+    <div class="container" style="opacity: 0.9">
+    <div style="margin-bottom: 10px">
+                <a href="/main/" class="btn btn-success">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                主页
+            </a>
+    </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">折线图</div>
+            <div class="panel-body">
+                <div id="m2" style="height: 400px;width: 100%"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="panel panel-default">
+                    <div class="panel-heading">柱状图</div>
+                    <div class="panel-body">
+                        <div id="m1" style="width: 100%;height: 400px"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-sm-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">饼图</div>
+                    <div class="panel-body">
+                        <div id="m3" style="width: 100%;height: 400px"></div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+{% endblock %}
+
+
+
+{% block js %}
+    {#柱状图#}
+    <script>
+
+        $(function () {
+            initBar();
+        })
+
+        /**
+         * 初始化柱状图
+         */
+
+        function initBar() {
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('m1'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '各月销售额',
+                    subtext: '数据统计',
+
+                    textAlign: 'auto',
+                    left: 'center'
+                    //使标题剧中
+                },
+                tooltip: {},
+                legend: {
+                    data: [],//后台获取
+                    bottom: 0
+                    //使名字距离底部为0
+
+                },
+                xAxis: {
+                    data: []//后台获取
+                },
+
+                yAxis: {},
+                series: []//后台获取
+            };
+            $.ajax({
+                url: '/echarts/bar/',
+                type: 'get',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status) {
+                        {#获取数据#}
+                        option.legend.data = res.legend_list;
+                        option.series = res.series_list;
+                        option.xAxis.data = res.x_axis;
+
+                        myChart.setOption(option);
+                    }
+                }
+            })
+
+
+        }
+
+
+    </script>
+    {#折线图#}
+    <script>
+        $(function () {
+            initLine();
+        })
+
+        /**
+         * 初始化折线图
+         */
+        function initLine() {
+            var chartDom = document.getElementById('m2');
+            var myChart = echarts.init(chartDom);
+
+            var option = {
+                title: {
+                    text: '个人项目变化',
+                    subtext: '数据统计',
+
+                    textAlign: 'auto',
+                    left: 'center'
+                    //使标题剧中
+                },
+                tooltip: {
+                    trigger: 'item',
+                },
+                legend: {
+                    data: [],//后台获取
+                    bottom: 0
+                    //使名字距离底部为0
+
+                },
+
+
+                xAxis: {
+                    type: 'category',
+                    data: []
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        type: 'line',
+                        data: [],
+                        smooth: true
+
+                    }
+                ]
+            };
+            $.ajax({
+                url: '/echarts/line/',
+                type: 'get',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status) {
+                        {#获取数据#}
+                        option.legend.data = res.legend;
+                        option.xAxis.data = res.x_axis;
+                        option.series = res.series_list;
+
+                        option && myChart.setOption(option);
+
+                    }
+                }
+            })
+
+
+        }
+
+    </script>
+    {#饼图#}
+    <script>
+        $(function () {
+            initPie();
+        })
+
+        function initPie() {
+            // 基于准备好的dom，初始化echarts实例
+            var chartDom = document.getElementById('m3');
+            var myChart = echarts.init(chartDom);
+            {#var option;#}
+
+            var option = {
+                title: {
+                    text: '全年数据统计',
+                    subtext: '份额占比',
+
+                    textAlign: 'auto',
+                    left: 'center'
+                    //使标题剧中
+                },
+                tooltip: {
+                    trigger: 'item',
+                },
+                legend: {
+                    {#top: '5%',#}
+                    {#left: 'center',#}
+                    bottom: 0
+
+                },
+                series: [
+                    {
+                        name: 'Access From',
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        avoidLabelOverlap: false,
+                        itemStyle: {
+                            borderRadius: 10,
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        },
+                        label: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: 40,
+                                fontWeight: 'bold'
+                            }
+                        },
+                        labelLine: {
+                            show: false
+                        },
+                        data: []
+                    }
+                ]
+            };
+            $.ajax({
+                url: '/echarts/pie/',
+                type: 'get',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status) {
+                        {#获取数据#}
+                        option.series[0].data = res.series_list;
+
+                        option && myChart.setOption(option);
+
+                    }
+
+                }
+            })
+
+
+        }
+
+    </script>
+
+{% endblock %}

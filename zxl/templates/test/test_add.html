@@ -1,0 +1,46 @@
+{% extends 'OUT.html' %}
+{% block content %}
+<div class="container">
+    <div class="container">
+
+
+    <div class="panel panel-default">
+
+        <div class="panel-heading" style="margin-bottom: 10px">
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+            测试添加
+        </div>
+
+
+
+
+
+        <form  method="post">
+             {% csrf_token %}
+           {% for field in form %}
+                    <div class="form-group">
+                        <label>{{ field.label }}</label>
+                        {{ field }}
+                        <span style="color: red">{{ field.errors.0 }}</span>
+                    </div>
+
+                {% endfor %}
+
+
+
+
+
+                <span style="color: red">{{ error_msg }}</span>
+            </div>
+            <button type="submit" class="btn btn-primary">提交</button>
+
+        </form>
+
+    </div>
+
+
+</div>
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'OUT.html' %}
+{% block content %}
+
+    <div class="container">
+            <div style="margin-bottom: 10px">
+                <a href="/main/" class="btn btn-success">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                主页
+            </a>
+            <a href="/city/add/" class="btn btn-success">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                添加
+            </a>
+        </div>
+
+
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                城市列表
+            </div>
+
+            {% csrf_token %}
+
+            <!-- Table -->
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>城市</th>
+                    <th>人口</th>
+                    <th>logo</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in city_list %}
+                    <tr>
+                        <td>{{ obj.id }}</td>
+                        <td>{{ obj.name }}</td>
+                        <td>{{ obj.count }}</td>
+                        <td>
+                            <img src="{{ obj.img.url }}" alt="" style="width: 200px;height: 100px;">
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+
+
+{% endblock %}
+
+
+

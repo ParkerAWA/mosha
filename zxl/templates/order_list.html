@@ -1,0 +1,371 @@
+{% extends 'OUT.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet"
+          href="{% static 'plugins/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css' %}">
+
+{% endblock %}
+
+{% block content %}
+
+    <!--新建模态框-->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">订单填写</h4>
+                </div>
+                <div class="modal-body">
+                    {#                    表单#}
+                    <div class="panel-body">
+                        <form id="formadd">
+                            <div class="clearfix">
+
+
+                                {% for field in form %}
+                                    <div class="col-xs-6">
+
+                                        <div class="form-group" style="position: relative">
+                                            <label>{{ field.label }}</label>
+                                            {{ field }}
+                                            <span style="color: red;position: absolute "
+                                                  class="error-msg"></span>
+                                        </div>
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" id="save">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 删除模态框 -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+
+
+            <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                <h4>是否确认删除？</h4>
+                <p style="margin: 10px 0">删除后关联数据将无法恢复！</p>
+                <p style="text-align: right">
+                    <button type="button" class="btn btn-danger" id="deleteConfirmDelete">确认删除</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消删除</button>
+                </p>
+            </div>
+
+
+        </div>
+    </div>
+
+    <!--搜索和按钮-->
+    <div class="container" style="margin-bottom: 10px">
+        {#            <div class="container">#}
+        {#        <input type="button" class="btn btn-success" value="新建订单1" data-toggle="modal" data-target="#myModal">#}
+        <input type="button" class="btn btn-success" value="新建订单" id="orderadd">
+
+
+        <div style="float: right;width: 300px">
+            <form method="get">
+                <div class="input-group">
+
+                    <input type="search" class="form-control" placeholder="商品名称" name="title"
+                           value="{{ search_data }}">
+                    <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">
+                    <span class="glyphicon glyphicon-search" aria-hidden="true"> </span>
+                </button>
+                </span>
+
+                </div>
+            </form>
+        </div>
+
+        {#            </div>#}
+    </div>
+
+    {#表格#}
+    <div class="container">
+        <div class="panel panel-default">
+
+            <div class="panel-heading" style="margin-bottom: 10px">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                订单列表
+            </div>
+
+            <table class="table table-hover table-bordered">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>订单号</th>
+                    <th>商品</th>
+                    <th>价格</th>
+                    <th>状态</th>
+                    <th>管理员</th>
+                    <th>操作</th>
+
+
+                </tr>
+                </thead>
+                <tbody>
+                {% for i in queryset %}
+                    <tr uid="{{ i.id }}">
+                        <td>{{ i.id }}</td>
+                        <td>{{ i.oid }}</td>
+
+                        <td>{{ i.title }}</td>
+                        <td>{{ i.price }}元</td>
+                        <td>{{ i.get_status_display }}</td>
+                        <td>{{ i.admin }}</td>
+
+                        <td>
+                            <input uid="{{ i.id }}" type="button" class="btn btn-primary btn-update" value="修改">
+                            <input uid="{{ i.id }}" type="button" class="btn btn-danger  btn-delete" value="删除">
+                        </td>
+
+                    </tr>
+                {% endfor %}
+
+
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+
+    {#分页#}
+    <div class=" clearfix" style="display: flex;justify-content: center">
+
+        <ul class="pagination" style="float: left">
+            {{ page_string }}
+            <li>
+                <form style="float: left;margin-top: -1px;" method="get">
+                    <input type="text" class="form-control"
+                           style="position: relative;float: left;display: inline-block;width: 60px;border-radius: 0;"
+                           name="page" placeholder="页码">
+
+                    <button class="btn btn-default" type="submit">跳转</button>
+
+                </form>
+            </li>
+        </ul>
+
+    </div>
+
+
+
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'plugins/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js' %}"></script>
+    {#    时间组件#}
+    <script>
+        $(function () {
+            $('#id_create_time').datetimepicker({
+                format: 'yyyy-mm-dd',
+                language: 'zh-CN',
+            });
+        })
+    </script>
+    <script>
+        var delete_id;
+        //var update_id;
+        var edit_id;
+
+
+        $(function () {
+            bindorderaddevent();
+            bindsaveevent();
+            bindBtnDeleteevent();
+            binddeleteConfirmDeleteevent();
+            bindBtnupdateevent();
+
+
+        })
+
+        function bindorderaddevent() {
+            $("#orderadd").click(function () {
+                edit_id = undefined;
+                $("#formadd")[0].reset();
+                {#清空表单#}
+                $("#myModal").modal('show');
+            })
+        }
+
+        function bindsaveevent() {
+            $("#save").click(function () {
+                $(".error-msg").empty();
+                //清除错误信息
+                if (edit_id) {
+                    //编辑
+                    doedit()
+
+                } else {
+                    //添加
+                    doadd()
+                }
+                //草稿1
+
+            })
+        }
+
+        function doadd() {
+            //向后台发送添加的ajax请求
+            $.ajax({
+                url: '/order/add/',
+                type: 'post',
+                data: $("#formadd").serialize(),
+                dataTypes: 'json',
+                success: function (res) {
+                    if (res.status) {
+                        {#alert('成功');#}
+
+                        $("#formadd")[0].reset();
+                        {#清空表单#}
+                        $('#myModal').modal('hide');
+                        {#关闭模态框#}
+                        location.reload();
+                        {#用js刷新页面#}
+
+                    } else {
+                        $.each(res.error, function (name, errorlist) {
+                            {#console.log(name, data);#}
+                            $('#id_' + name).next().text(errorlist[0]);
+
+                        })
+                    }
+
+                }
+            })
+
+
+        }
+
+        function doedit() {
+            //向后台发送添加的ajax请求
+            $.ajax({
+                url: '/order/edit/' + '?uid=' + edit_id,
+                //url: '/order/edit/'+edit_id,
+                type: 'post',
+                data: $("#formadd").serialize(),
+                //打包表单数据向后台发送
+                dataTypes: 'json',
+                success: function (res) {
+                    if (res.status) {
+                        {#alert('成功');#}
+
+                        $("#formadd")[0].reset();
+                        {#清空表单#}
+                        $('#myModal').modal('hide');
+                        {#关闭模态框#}
+                        location.reload();
+                        {#用js刷新页面#}
+
+                    } else {
+                        $.each(res.error, function (name, errorlist) {
+                            {#console.log(name, data);#}
+                            $('#id_' + name).next().text(errorlist[0]);
+
+                        })
+                    }
+
+                }
+            })
+
+        }
+
+        function bindBtnDeleteevent() {
+            $(".btn-delete").click(function () {
+                $('#deleteModal').modal('show');
+                {#获取删除的id，赋值给全局变量#}
+                delete_id = $(this).attr('uid');
+
+            });
+        }
+
+        function binddeleteConfirmDeleteevent() {
+            $("#deleteConfirmDelete").click(function () {
+                {#点击删除按钮，发送ajax请求#}
+                $.ajax({
+                    url: '/order/delete/',
+                    {#/order/delete/?uid=xxx#}
+
+                    type: 'GET',
+                    data: {
+                        uid: delete_id
+                    },
+                    dataTypes: 'json',
+                    success: function (res) {
+                        if (res.status) {
+                            $('#deleteModal').modal('hide');
+                            {#delete_id=0;#}
+                            {#将删除的id清空#}
+                            {#$("#tr_"+delete_id).remove();#}
+                            {#再页面上删除数据#}
+                            location.reload();
+                            {#刷新页面#}
+                        } else {
+                            alert(res.error)
+                        }
+                    }
+                })
+
+            });
+        }
+
+        function bindBtnupdateevent() {
+            $(".btn-update").click(function () {
+                $("#formadd")[0].reset();
+                {#清空表单#}
+                var uid = $(this).attr('uid');
+                edit_id = uid;
+                //edit_id = $(this).attr('uid');
+
+                {#发送ajax请求获取当前订单信息#}
+                $.ajax({
+                    url: '/order/update/',
+                    {#/order/delete/?uid=xxx#}
+
+                    type: 'GET',
+                    data: {
+                        uid: $(this).attr('uid')
+                    },
+                    dataTypes: 'json',
+                    success: function (res) {
+                        if (res.status) {
+                            {#console.log(res.data);#}
+                            {#将数据放到对话框#}
+                            $.each(res.data, function (name, value) {
+                                $('#id_' + name).val(value);
+
+                            })
+
+                            $('#myModalLabel').text('修改订单');
+                            $("#myModal").modal('show');
+
+                        } else {
+                            alert(res.error);
+
+                        }
+                    }
+                })
+            })
+        }
+
+
+    </script>
+{% endblock %}

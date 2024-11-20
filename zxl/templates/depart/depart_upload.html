@@ -1,0 +1,43 @@
+{% extends 'OUT.html' %}
+{% block content %}
+
+    <div class="container">
+
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                上传部门列表
+            </div>
+
+            {% if error_message %}
+            <p style="color: red;">{{ error_message }}</p>
+            {% endif %}
+            <form method="post" enctype="multipart/form-data" action="/depart/upload/">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="file"  name="exc">
+
+                </div>
+
+                <input type="submit" value="上传" class="btn btn-info" >
+
+            </form>
+         <ul>
+        {% for dept in departments %}
+            <li>{{ dept.title }}</li>
+        {% endfor %}
+    </ul>
+
+
+            <!-- Table -->
+        </div>
+
+
+    </div>
+
+
+{% endblock %}
+
+
+

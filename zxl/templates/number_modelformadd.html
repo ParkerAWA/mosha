@@ -1,0 +1,27 @@
+{% extends 'OUT.html' %}
+{% block content %}
+    <div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading" style="margin-bottom: 10px">
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+            号码添加
+        </div>
+        <form  method="post">
+            {% csrf_token %}
+            <div class="form-group" style="margin-bottom: 10px">
+                {% for field in form %}
+                    <label>{{ field.label }}</label>
+                    {{ field }}
+                    <span style="color: red">{{ field.errors.0 }}</span>
+
+                {% endfor %}
+
+             </div>
+        <button type="submit" class="btn btn-primary">提交</button>
+        </form>
+    </div>
+    </div>
+
+
+
+{% endblock %}
