@@ -1,0 +1,36 @@
+python操作excel----------openpyxl库
+
+ pip freeze > requirements.txt
+ 生成依赖项清单
+
+将当前Python环境中所有已安装的包及其版本号记录到requirements.txt文件中。
+这样做的目的是为了方便项目移植或分享，其他用户可以通过这个文件快速重建相同的依赖环境。命令解释如下：
+pip freeze：此命令会列出环境中安装的所有Python包及其版本号。
+>：这是一个重定向操作符，表示将前面命令的输出结果导向（写入）到后面指定的文件中。
+requirements.txt：这是文件名，用于存储所有依赖包信息。
+
+
+在新的环境中，可以使用pip install -r requirements.txt命令一次性安装这些依赖包。
+
+
+钩子函数----回调函数
+
+
+shadowsocks************
+socks代理***********
+
+
+封ip解决办法：
+1.中间件加cookie
+2.加代理
+
+
+
+使用中间件和管道的时候要记得配置setting.py
+
+常见持久化存储格式：csv,json,xml
+
+
+列如：
+设置存储格式---以csv格式存储数据---在终端执行：scrapy  crawl douban -o douban.csv
+
